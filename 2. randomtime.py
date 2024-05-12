@@ -30,14 +30,14 @@ for root, dirs, files in os.walk(directory):
         if len(parts) >= 5:
             time_text = parts[4].split('.')[0]  # 假设时间信息在文件名中的第四个和第五个下划线之间的文本作为时间
             try:
-                time_obj = datetime.strptime(time_text, '%Y%m%d%H%M%S')
+                time_obj = datetime.strptime(time_text, '%Y%m%d%H%M%S').replace(tzinfo=None)  # 将时间对象转换为没有时区信息的对象
                 print(f"文件名: {filename}, 提取的时间文本: {time_text}, 转换后的时间: {time_obj}")
-
                 # 遍历每行时间范围
                 for index, row in df.iterrows():
                     start_time = row['开始时间']
                     end_time = row['结束时间']
-
+                    # 为time_obj添加时区信息（假设时区为UTC）
+                    time_obj = time_obj.replace(tzinfo=pytz.UTC)
                     # 判断文件名的时间是否在时间范围内
                     if start_time <= time_obj <= end_time:
                         # 如果时间在范围内，则复制文件到新的文件夹中
